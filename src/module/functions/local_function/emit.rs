@@ -187,6 +187,13 @@ impl<'instr> Visitor<'instr> for Emit<'_> {
                 Instruction::MemoryFill(idx)
             }
 
+            Ternop(e) => {
+                match e.op {
+                    TernaryOp::F32x4RelaxedMadd => Instruction::F32x4RelaxedMadd,
+                    TernaryOp::F32x4RelaxedNmadd => Instruction::F32x4RelaxedNmadd,
+                }
+            }
+
             Binop(e) => {
                 use crate::ir::BinaryOp::*;
 
@@ -427,6 +434,9 @@ impl<'instr> Visitor<'instr> for Emit<'_> {
                     I64x2ExtMulHighI32x4S => Instruction::I64x2ExtMulHighI32x4S,
                     I64x2ExtMulLowI32x4U => Instruction::I64x2ExtMulLowI32x4U,
                     I64x2ExtMulHighI32x4U => Instruction::I64x2ExtMulHighI32x4U,
+
+                    F32x4RelaxedMin => Instruction::F32x4RelaxedMin,
+                    F32x4RelaxedMax => Instruction::F32x4RelaxedMax,
                 }
             }
 

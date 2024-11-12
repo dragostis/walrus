@@ -315,6 +315,13 @@ pub enum Instr {
     },
 
     /// Binary operations, those requiring two operands
+    Ternop {
+        /// The operation being performed
+        #[walrus(skip_visit)]
+        op: TernaryOp,
+    },
+
+    /// Binary operations, those requiring two operands
     Binop {
         /// The operation being performed
         #[walrus(skip_visit)]
@@ -637,6 +644,13 @@ impl fmt::Display for Value {
     }
 }
 
+#[allow(missing_docs)]
+#[derive(Copy, Clone, Debug)]
+pub enum TernaryOp {
+    F32x4RelaxedMadd,
+    F32x4RelaxedNmadd,
+}
+
 /// Possible binary operations in wasm
 #[allow(missing_docs)]
 #[derive(Copy, Clone, Debug)]
@@ -875,6 +889,9 @@ pub enum BinaryOp {
     I64x2ExtMulHighI32x4S,
     I64x2ExtMulLowI32x4U,
     I64x2ExtMulHighI32x4U,
+
+    F32x4RelaxedMin,
+    F32x4RelaxedMax,
 }
 
 /// Possible unary operations in wasm
@@ -1247,6 +1264,7 @@ impl Instr {
             | Instr::GlobalGet(..)
             | Instr::GlobalSet(..)
             | Instr::Const(..)
+            | Instr::Ternop(..)
             | Instr::Binop(..)
             | Instr::Unop(..)
             | Instr::Select(..)

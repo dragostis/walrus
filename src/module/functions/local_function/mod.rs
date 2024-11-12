@@ -317,6 +317,9 @@ fn append_instruction(ctx: &mut ValidationContext, inst: Operator, loc: InstrLoc
     let binop = |ctx: &mut ValidationContext, op| {
         ctx.alloc_instr(Binop { op }, loc);
     };
+    let ternop = |ctx: &mut ValidationContext, op| {
+        ctx.alloc_instr(Ternop { op }, loc);
+    };
 
     let mem_arg = |ctx: &mut ValidationContext, arg: &wasmparser::MemArg| -> (MemoryId, MemArg) {
         (
@@ -1330,6 +1333,11 @@ fn append_instruction(ctx: &mut ValidationContext, inst: Operator, loc: InstrLoc
             ctx.alloc_instr(ReturnCallIndirect { ty, table }, loc);
         }
 
+        Operator::F32x4RelaxedMadd => ternop(ctx, TernaryOp::F32x4RelaxedMadd),
+        Operator::F32x4RelaxedNmadd => ternop(ctx, TernaryOp::F32x4RelaxedNmadd),
+        Operator::F32x4RelaxedMin => binop(ctx, BinaryOp::F32x4RelaxedMin),
+        Operator::F32x4RelaxedMax => binop(ctx, BinaryOp::F32x4RelaxedMax),
+
         // List all unimplmented operators instead of have a catch-all arm.
         // So that future upgrades won't miss additions to this list that may be important to know.
         Operator::TryTable { try_table: _ }
@@ -1470,16 +1478,16 @@ fn append_instruction(ctx: &mut ValidationContext, inst: Operator, loc: InstrLoc
         | Operator::I32x4RelaxedTruncF32x4U
         | Operator::I32x4RelaxedTruncF64x2SZero
         | Operator::I32x4RelaxedTruncF64x2UZero
-        | Operator::F32x4RelaxedMadd
-        | Operator::F32x4RelaxedNmadd
+        // | Operator::F32x4RelaxedMadd
+        // | Operator::F32x4RelaxedNmadd
         | Operator::F64x2RelaxedMadd
         | Operator::F64x2RelaxedNmadd
         | Operator::I8x16RelaxedLaneselect
         | Operator::I16x8RelaxedLaneselect
         | Operator::I32x4RelaxedLaneselect
         | Operator::I64x2RelaxedLaneselect
-        | Operator::F32x4RelaxedMin
-        | Operator::F32x4RelaxedMax
+        // | Operator::F32x4RelaxedMin
+        // | Operator::F32x4RelaxedMax
         | Operator::F64x2RelaxedMin
         | Operator::F64x2RelaxedMax
         | Operator::I16x8RelaxedQ15mulrS
